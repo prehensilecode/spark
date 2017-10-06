@@ -1,11 +1,42 @@
 #!/bin/bash
 
+# Parallel Environment (PE) script for integration with Univa Grid Engine.
+# (May work with other versions of Grid Engine.)
+#
+# Example PE:
+#
+# pe_name                spark2
+# slots                  99999
+# used_slots             0
+# bound_slots            0
+# user_lists             NONE
+# xuser_lists            NONE
+# start_proc_args        /opt/sge/var/default/common/pescripts/spark2start.sh
+# stop_proc_args         NONE
+# allocation_rule        16
+# control_slaves         FALSE
+# job_is_first_task      FALSE
+# urgency_slots          min
+# accounting_summary     FALSE
+# daemon_forks_slaves    FALSE
+# master_forks_slaves    TRUE
+
 spark_conf_dir=${SGE_O_WORKDIR}/conf.${JOB_ID}
 /bin/mkdir -p ${spark_conf_dir}
+
+### XXX
+### To update for your installation
+### * spark_home    -- Spark installation prefix
+### * java_version  -- JRE installation prefix
+### * the "export PATH" and "setenv PATH" lines below; 
+###     this pescript assumes a private installation of Intel Distribution for Python
+###     in prefix $SPARK_HOME/intelpython3
+
 
 spark_home="/mnt/HA/opt/apache/spark/2.2.0"
 
 java_version="java-1.8.0-oracle.x86_64"
+
 
 ###
 ### for bash-like
