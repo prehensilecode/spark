@@ -1,36 +1,20 @@
 #!/bin/bash
 
-# Parallel Environment (PE) script for integration with Univa Grid Engine.
-# (May work with other versions of Grid Engine.)
-#
-# Example PE:
-#
-# pe_name                spark2
-# slots                  99999
-# used_slots             0
-# bound_slots            0
-# user_lists             NONE
-# xuser_lists            NONE
-# start_proc_args        /opt/sge/var/default/common/pescripts/spark2start.sh
-# stop_proc_args         NONE
-# allocation_rule        16
-# control_slaves         FALSE
-# job_is_first_task      FALSE
-# urgency_slots          min
-# accounting_summary     FALSE
-# daemon_forks_slaves    FALSE
-# master_forks_slaves    TRUE
-
 spark_conf_dir=${SGE_O_WORKDIR}/conf.${JOB_ID}
 /bin/mkdir -p ${spark_conf_dir}
 
+spark_home="/mnt/HA/opt/apache/spark/2.2.0"
+
 java_version="java-1.8.0-oracle.x86_64"
 
+###
 ### for bash-like
+###
 sparkenvfile=${spark_conf_dir}/spark-env.sh
 
 echo "#!/usr/bin/env bash" > $sparkenvfile
 echo "export JAVA_HOME=/usr/lib/jvm/${java_version}" >> $sparkenvfile
+echo "export PATH=${spark_home}/bin:${spark_home}/sbin:${spark_home}/intelpython3/bin:${PATH}" >> $sparkenvfile
 echo "export SPARK_CONF_DIR=${spark_conf_dir}" >> $sparkenvfile
 echo "export SPARK_MASTER_WEBUI_PORT=8880" >> $sparkenvfile
 echo "export SPARK_WORKER_WEBUI_PORT=8881" >> $sparkenvfile
@@ -61,11 +45,14 @@ echo "export SPARK_LOCAL_DIRS=${TMP}" >> $sparkenvfile
 chmod +x $sparkenvfile
 
 
+###
 ### for csh-like
+###
 sparkenvfile=${spark_conf_dir}/spark-env.csh
 
 echo "#!/usr/bin/env tcsh" > $sparkenvfile
 echo "setenv JAVA_HOME /usr/lib/jvm/${java_version}" >> $sparkenvfile
+echo "setenv PATH ${spark_home}/bin:${spark_home}/sbin:${spark_home}/intelpython3/bin:${PATH}" >> $sparkenvfile
 echo "setenv SPARK_CONF_DIR ${spark_conf_dir}" >> $sparkenvfile
 echo "setenv SPARK_MASTER_WEBUI_PORT 8880" >> $sparkenvfile
 echo "setenv SPARK_WORKER_WEBUI_PORT 8881" >> $sparkenvfile
